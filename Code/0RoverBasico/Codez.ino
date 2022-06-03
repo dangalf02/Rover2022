@@ -22,7 +22,7 @@ void rover_DC(){
  BackFwdIzq=1;
  BackFwdDer=1;
  ValM1   = 90; // Potencia Motor Izq
- ValM2   = 120; // Potencia Motor Der
+ ValM2   = 130; // Potencia Motor Der
  PWM1   = 11; // Pin Motor 1  (Der)    PWM1 = ValM1  , PoM1= HIGH => avanza
  PoM1 = 6;   // Pin Motor 1 (Der)  PWM1 = HIGH  , PoM1= ValM1 => retrocede
  PWM2   = 5; // Pin Motor 2  

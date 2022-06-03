@@ -1,5 +1,5 @@
 // Initialize
-String vers = "RoverBasico v1.1 2022Ene26";
+String vers = "RoverBasico v1.1 2022Abr26";
 
 int PWM1   = 6; // Pin Motor 1  (Izq)    PWM1 = ValM1  , PoM1= HIGH => avanza
 int PoM1 = 11;   // Pin Motor 1 (Izq)  PWM1 = HIGH  , PoM1= ValM1 => retrocede
@@ -16,6 +16,9 @@ long Dis;
 int IRDer = A0;
 int IRIzq = A1;
 int IRValue = 0;
+long TimeInit,TimeDif ;
+
+
 #define Debug 1
 #if Debug ==1
  #define Print(x) Serial.print(x)
@@ -45,29 +48,44 @@ void setup()
   Serial.println("Start");
   Dis=distancia(BajoTrig,BajoEcho);
   Serial.print("Version: "); Serial.println(vers);
-  Serial.print("Rover: "); Serial.print(Dis);
+  Serial.print("Distancia: "); Serial.println(Dis);
   delay(2000);//Para dar tiempo luego de programarlo /conectar bateria
-Avanza(2000); 
-GiroDer(2000);
-Para();delay(300);
-//GiroIzq(1000);
-Para();delay(300);
+//Avanza(800); GiroDer(500); Avanza(300);GiroIzq(300);Para();
+ 
+
 }//setup
 
 
 // Main program
 void loop()
 {
+
+while (Dis<250){
+ Dis= distancia(BajoTrig,BajoEcho) ;
+ Print("Distancia: ");Println(Dis);
+}
+
+Para();
+
+
+}//endloop
+
+void test()
+{
 Dis=distancia(BajoTrig,BajoEcho);
 if ((Dis<15)) {GiroIzq(1000); }
 Print("Dist: "); Println(Dis);
 Avanza(100); 
+}//test
+
+void infra()
+{
 //IRValue = analogRead(A0);
 //Print("Der: "); Println(IRValue);
 //IRValue = analogRead(A1);
 //Print("Izq: "); Println(IRValue);
+}
 
-}//endloop
 
 //*****************************  Funciones ******************************
 
@@ -154,11 +172,15 @@ long distancia(int Trig, int Echo) { //Mide la distancia y la guarda en "cm"
   digitalWrite(Trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(Trig, LOW);
-  Tiempo_us = pulseIn(Echo, HIGH, 4060);
+  Tiempo_us = pulseIn(Echo, HIGH, 4060); // Timeout en uSegs (68cm)
   resultado = Tiempo_us / 58;
   delay(100); // Verificar
   if (Tiempo_us == 0) {
     resultado = 199;
+    pinMode(Echo, OUTPUT); //  echo pin en output mode
+    digitalWrite(Echo, LOW); // Pulso LOW
+    delayMicroseconds(200);
+    pinMode(Echo, INPUT); // De nuevo a input mode
   }
   return resultado;
 } // distancia
